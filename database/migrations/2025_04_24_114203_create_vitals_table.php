@@ -17,7 +17,7 @@ return new class extends Migration
             // Foreign Keys
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->foreignId('nurse_id')->nullable()->constrained()->onDelete('set null'); // The nurse who recorded it
-            $table->foreignId('appointment_id')->nullable()->constrained()->onDelete('set null'); // Optional: tie to an appointment
+            $table->integer('appointment_id')->nullable(); // Optional: tie to an appointment
 
             // Vital Measurements
             $table->float('temperature')->nullable(); // in Celsius

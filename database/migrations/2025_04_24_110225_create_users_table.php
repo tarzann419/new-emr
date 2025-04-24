@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained('tenants');
             $table->string('name');
             $table->string('first_name');
             $table->string('last_name');
@@ -25,6 +24,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('created_by')->nullable();
             $table->string('profile_picture')->nullable();
+            $table->string('tenant_id');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
