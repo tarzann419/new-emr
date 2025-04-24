@@ -14,7 +14,8 @@ class TenantSeeder extends Seeder
     {
         \App\Models\Tenant::create([
             'name' => 'House Teaching Hospital',
-            'tenant_id' => 'house_teaching_hospital',
+            'tenant_id' => '111000',
+            'prefix' => 'HTH',
             'email' => 'house@test.com',
         ]);
         
