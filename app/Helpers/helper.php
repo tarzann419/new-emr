@@ -18,3 +18,15 @@ function tenant_id()
     return auth()->user()->tenant_id ?? '';
 }
 
+function patient_id()
+{
+    if (auth()->user()->hasRole('patient')) {
+        // return the patient ID of the authenticated user
+        return auth()->user()->patient->id;
+    }
+}
+
+function username()
+{
+    return auth()->user()->username ?? '';
+}

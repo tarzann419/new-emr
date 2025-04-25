@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PatientProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,5 +10,5 @@ Route::prefix('nurse')->middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::resource('patients', PatientProfileController::class);
-    
+    Route::put('/appointments/{id}/reschedule', [AppointmentController::class, 'rescheduleAppointment'])->name('appointments.reschedule');
 });

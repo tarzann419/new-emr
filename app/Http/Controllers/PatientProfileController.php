@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DoctorService;
 use App\Services\PatientService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -11,11 +12,13 @@ class PatientProfileController extends Controller
 {
     public $userService;
     public $patientService;
+    public $doctorService;
 
-    public function __construct(UserService $userService, PatientService $patientService)
+    public function __construct(UserService $userService, PatientService $patientService, DoctorService $doctorService)
     {
         $this->userService = $userService;
         $this->patientService = $patientService;
+        $this->doctorService = $doctorService;
     }
 
 
@@ -26,7 +29,8 @@ class PatientProfileController extends Controller
     {
         $patients = $this->patientService->getAllPatients();
         $tenant_id = tenant_id();
-        return view('backend.patients.index', compact('patients', 'tenant_id'));
+        $doctors = $this->doctorService->getAllDoctors();
+        return view('backend.patients.index', compact('patients', 'tenant_id', 'doctors'));
     }
 
     /**
