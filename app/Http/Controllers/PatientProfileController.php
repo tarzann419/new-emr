@@ -69,6 +69,7 @@ class PatientProfileController extends Controller
         ]);
 
         if ($validator->fails()) {
+            flash()->error('Validation failed. Please check your input.');
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -79,8 +80,10 @@ class PatientProfileController extends Controller
         $patient = $this->patientService->createPatient($request->all(), $user->id);
 
         if ($patient) {
+            flash()->success('Patient created successfully.');
             return redirect()->back()->with('success', 'Patient created successfully.');
         } else {
+            flash()->error('Failed to create patient.');
             return redirect()->back()->with('error', 'Failed to create patient.');
         }
     }
@@ -140,8 +143,10 @@ class PatientProfileController extends Controller
         $user = $this->userService->updateUser($id, $request->all());
 
         if ($patient) {
+            flash()->success('Patient updated successfully.');
             return redirect()->back()->with('success', 'Patient updated successfully.');
         } else {
+            flash()->error('Failed to update patient.');
             return redirect()->back()->with('error', 'Failed to update patient.');
         }
     }
@@ -155,8 +160,10 @@ class PatientProfileController extends Controller
         $user = $this->userService->deleteUser($id);
 
         if ($patient) {
+            flash()->success('Patient deleted successfully.');
             return redirect()->back()->with('success', 'Patient deleted successfully.');
         } else {
+            flash()->error('Failed to delete patient.');
             return redirect()->back()->with('error', 'Failed to delete patient.');
         }
     }
