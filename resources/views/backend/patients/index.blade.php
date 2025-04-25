@@ -81,6 +81,7 @@
                                             {{-- button group --}}
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <button type="button" data-bs-toggle="modal" data-bs-target="#updatePatient{{ $patient->id }}" class="btn btn-sm btn-primary">Edit</button>
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#bookAppointmentPatient{{ $patient->id }}" class="btn btn-sm btn-warning">Book Appointment</button>
                                                 <form action="{{ route('patients.destroy', $patient->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE') 
@@ -97,6 +98,7 @@
                                         <td>{{ $patient->created_at }}</td>
                                     </tr>
                                     
+                                    {{-- edit patient --}}
                                     <div class="modal fade" data-bs-backdrop="static" id="updatePatient{{ $patient->id }}" tabindex="-1" aria-labelledby="updatePatientLabel">
                                         <div class="modal-dialog modal-lg modal-dialog-centered">
                                             <div class="modal-content">
@@ -278,6 +280,94 @@
                                             </div> <!-- end modal content -->
                                         </div>
                                     </div>
+                                    {{-- end: edit patient --}}
+                                    
+                                    
+                                    {{-- bookAppointment --}}
+                                    <div class="modal fade" data-bs-backdrop="static" id="updatePatient{{ $patient->id }}" tabindex="-1" aria-labelledby="updatePatientLabel">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="updatePatientLabel">Update a Patient's Details</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('patients.update', $patient->id) }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <h5>Personal Details</h5>
+                                                        <div class="row g-3">
+                                                            <!-- First Name -->
+                                                            <div class="col-xxl-4 mb-3">
+                                                                <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" required name="first_name" id="first_name" placeholder="e.g., John" value="{{ old('first_name', $patient->first_name ?? '') }}">
+                                                            </div><!--end col-->
+                                                            
+                                                            <!-- Middle Name -->
+                                                            <div class="col-xxl-4 mb-3">
+                                                                <label for="middleName" class="form-label">Middle Name </label>
+                                                                <input type="text" class="form-control" required name="middle_name" id="middle_name" placeholder="e.g., Jane" value="{{ old('middle_name', $patient->middle_name ?? '') }}">
+                                                            </div><!--end col-->
+                                                            
+                                                            <!-- Last Name -->
+                                                            <div class="col-xxl-4 mb-3">
+                                                                <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" required name="last_name" id="last_name" placeholder="e.g., Doe" value="{{ old('last_name', $patient->last_name ?? '') }}">
+                                                            </div><!--end col-->
+                                                        </div>
+                                                        
+                                                        <div class="row g-3">
+                                                            <!-- Phone -->
+                                                            <div class="col-xxl-4 mb-3">
+                                                                <label for="phone" class="form-label">Phone</label>
+                                                                <input type="text" class="form-control" name="phone" id="phone" placeholder="e.g., 123-456-7890" value="{{ old('phone', $patient->phone ?? '') }}">
+                                                            </div>
+                                                            
+                                                            <!-- email -->
+                                                            <div class="col-xxl-4 mb-3">
+                                                                <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                                                <input type="email" class="form-control" required name="email" id="email" placeholder="e.g., example@example.com" value="{{ old('email', $patient->email ?? '') }}">
+                                                            </div>
+                                                            
+                                                            <!-- Marital Status -->
+                                                            <div class="col-xxl-4 mb-3">
+                                                                <label for="marital_status" class="form-label">Marital Status</label>
+                                                                <select name="marital_status" id="marital_status" class="form-select">
+                                                                    <option value="" disabled>Select a Marital Status</option>
+                                                                    <option value="married" {{ old('marital_status', $patient->marital_status ?? '') == 'married' ? 'selected' : '' }}>Married</option>
+                                                                    <option value="single" {{ old('marital_status', $patient->marital_status ?? '') == 'single' ? 'selected' : '' }}>Single</option>
+                                                                    <option value="divorced" {{ old('marital_status', $patient->marital_status ?? '') == 'divorced' ? 'selected' : '' }}>Divorced</option>
+                                                                    <option value="other" {{ old('marital_status', $patient->marital_status ?? '') == 'other' ? 'selected' : '' }}>Other</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <hr>
+                                                        <h5>Appointment Details</h5>
+                                                        <div class="col-xxl-6 mb-3">
+                                                            <label for="email" class="form-label">Appointment Date<span class="text-danger">*</span></label>
+                                                            <input type="date" class="form-control" required name="appointment_date" id="appointment_date">
+                                                        </div>
+                                                        <div class="col-xxl-6 mb-3">
+                                                            <label for="email" class="form-label">Appointment Time<span class="text-danger">*</span></label>
+                                                            <input type="date" class="form-control" required name="appointment_time" id="appointment_time">
+                                                        </div>
+                                                        
+                                                        
+                                                        <!-- Submit Button -->
+                                                        <div class="col-lg-12">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <input type="hidden" value="{{ $tenant_id }}" class="form-control" required name="tenant_id" id="tenant_id">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                            </div>
+                                                        </div><!-- end col -->
+                                                    </form>
+                                                </div> <!-- end modal body -->
+                                            </div> <!-- end modal content -->
+                                        </div>
+                                    </div>
+                                    {{-- end: bookAppointment --}}
                                     
                                     
                                     

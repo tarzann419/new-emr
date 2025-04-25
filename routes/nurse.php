@@ -9,4 +9,5 @@ Route::prefix('nurse')->middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::resource('patients', PatientProfileController::class);
+    
 });
