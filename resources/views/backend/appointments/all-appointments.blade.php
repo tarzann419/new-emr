@@ -104,6 +104,7 @@
                                             {{-- button group --}}
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <button type="button" data-bs-toggle="modal" data-bs-target="#rescheduleAppointment{{ $appointment->id }}" class="btn btn-sm btn-primary">Reshedule Appointment</button>
+                                                <a href="{{ route('vitals.patient', [$appointment->id, $appointment->patient->id]) }}" class="btn btn-sm btn-success">Record Vitals</a>
                                                 <form action="{{ route('appointments.destroy', $appointment->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE') 
@@ -142,178 +143,178 @@
                                             @else
                                             <span class="badge bg-danger">Cancelled</span>
                                             @endif
-                                            <td>{{ $appointment->created_at }}</td>
-                                        </tr>
-                                        
-                                        
-                                        {{-- reschedule appointment --}}
-                                        <div class="modal fade" data-bs-backdrop="static" id="rescheduleAppointment{{ $appointment->id }}" tabindex="-1" aria-labelledby="rescheduleAppointmentLabel">
-                                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="rescheduleAppointmentLabel">Reschedule Patient's Appointment</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form action="{{ route('appointments.reschedule', $appointment->id) }}" method="POST" enctype="multipart/form-data">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <h5>Patient Details</h5>
-                                                            <div class="row g-3">
-                                                                <!-- First Name -->
-                                                                <div class="col-xxl-12 mb-3">
-                                                                    <label for="firstName" class="form-label">Patient <span class="text-danger">*</span></label>
-                                                                    <select disabled name="" id="" class="form-control">
-                                                                        <option value="" selected disabled>Select a Patient</option>
-                                                                        @foreach($patients as $patient)
-                                                                        <option {{ $appointment->patient_id == $patient->id ? 'selected' : '' }} value="{{ $patient->id }}">{{ $patient->first_name . ' ' . $patient->last_name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div><!--end col-->
+                                        </td>
+                                        <td>{{ $appointment->created_at }}</td>
+                                    </tr>
+                                    
+                                    
+                                    {{-- reschedule appointment --}}
+                                    <div class="modal fade" data-bs-backdrop="static" id="rescheduleAppointment{{ $appointment->id }}" tabindex="-1" aria-labelledby="rescheduleAppointmentLabel">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="rescheduleAppointmentLabel">Reschedule Patient's Appointment</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('appointments.reschedule', $appointment->id) }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <h5>Patient Details</h5>
+                                                        <div class="row g-3">
+                                                            <!-- First Name -->
+                                                            <div class="col-xxl-12 mb-3">
+                                                                <label for="firstName" class="form-label">Patient <span class="text-danger">*</span></label>
+                                                                <select disabled name="" id="" class="form-control">
+                                                                    <option value="" selected disabled>Select a Patient</option>
+                                                                    @foreach($patients as $patient)
+                                                                    <option {{ $appointment->patient_id == $patient->id ? 'selected' : '' }} value="{{ $patient->id }}">{{ $patient->first_name . ' ' . $patient->last_name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div><!--end col-->
+                                                        </div>
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-xxl-6 mb-3">
+                                                                <label for="email" class="form-label">Appointment Date<span class="text-danger">*</span></label>
+                                                                <input type="date" class="form-control" required name="appointment_date" value="{{ old('appointment_date', $appointment->appointment_date) }}" id="appointment_date">
                                                             </div>
-                                                            
-                                                            <div class="row">
-                                                                <div class="col-xxl-6 mb-3">
-                                                                    <label for="email" class="form-label">Appointment Date<span class="text-danger">*</span></label>
-                                                                    <input type="date" class="form-control" required name="appointment_date" value="{{ old('appointment_date', $appointment->appointment_date) }}" id="appointment_date">
-                                                                </div>
-                                                                <div class="col-xxl-6 mb-3">
-                                                                    <label for="email" class="form-label">Appointment Time<span class="text-danger">*</span></label>
-                                                                    <input type="time" class="form-control" required name="appointment_time" value="{{ old('appointment_time', $appointment->appointment_time) }}" id="appointment_time">
-                                                                </div>
+                                                            <div class="col-xxl-6 mb-3">
+                                                                <label for="email" class="form-label">Appointment Time<span class="text-danger">*</span></label>
+                                                                <input type="time" class="form-control" required name="appointment_time" value="{{ old('appointment_time', $appointment->appointment_time) }}" id="appointment_time">
                                                             </div>
-                                                            
-                                                            
-                                                            
-                                                            <!-- Submit Button -->
-                                                            <div class="col-lg-12">
-                                                                <div class="hstack gap-2 justify-content-end">
-                                                                    <input type="hidden" name="patient_id" value="{{ $appointment->patient->id }}">
-                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="submit" class="btn btn-warning">Complete Rescheduling</button>
-                                                                </div>
-                                                            </div><!-- end col -->
-                                                        </form>
-                                                    </div> <!-- end modal body -->
-                                                </div> <!-- end modal content -->
-                                            </div>
+                                                        </div>
+                                                        
+                                                        
+                                                        
+                                                        <!-- Submit Button -->
+                                                        <div class="col-lg-12">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <input type="hidden" name="patient_id" value="{{ $appointment->patient->id }}">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-warning">Complete Rescheduling</button>
+                                                            </div>
+                                                        </div><!-- end col -->
+                                                    </form>
+                                                </div> <!-- end modal body -->
+                                            </div> <!-- end modal content -->
                                         </div>
-                                        {{-- end: reschedule appointment --}}
-                                        
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                    </div>
+                                    {{-- end: reschedule appointment --}}
+                                    
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                
             </div>
             
-            
-            {{-- book appointment --}}
-            <div class="modal fade" data-bs-backdrop="static" id="bookAppointmentPatient" tabindex="-1" aria-labelledby="bookAppointmentPatientLabel">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="bookAppointmentPatientLabel">Book Appointment for a Patient</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{ route('appointments.store') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <h5>Patient Details</h5>
-                                <div class="row g-3">
-                                    <!-- First Name -->
-                                    <div class="col-xxl-12 mb-3">
-                                        <label for="firstName" class="form-label">Patient <span class="text-danger">*</span></label>
-                                        <select name="" id="" class="form-control">
-                                            <option value="" selected disabled>Select a Patient</option>
-                                            @foreach($patients as $patient)
-                                            <option value="{{ $patient->id }}">{{ $patient->first_name . ' ' . $patient->last_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div><!--end col-->
-                                </div>
-                                
-                                <hr>
-                                <h5>Appointment Details</h5>
-                                <div class="row">
-                                    <div class="col-xxl-6 mb-3">
-                                        <label for="email" class="form-label">Appointment Type <span class="text-danger">*</span></label>
-                                        <select name="appointment_type" id="appointment_type" class="form-select">
-                                            <option selected value="consultation">Consultation</option>
-                                            <option value="follow-up">Follow Up</option>
-                                            <option value="emergency">Emergency</option>
-                                            <option value="admission">Admission</option>
-                                            <option value="test">Test</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xxl-6 mb-3">
-                                        <label for="email" class="form-label">Doctor</label>
-                                        <select name="doctor_id" id="doctor_id" class="form-select">
-                                            <option selected value="" disabled>Select a Doctor</option>
-                                            @foreach ($doctors as $doctor)
-                                            <option value="{{ $doctor->id }}">{{ $doctor->first_name . ' ' . $doctor->last_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-xxl-6 mb-3">
-                                        <label for="email" class="form-label">Appointment Date<span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" required name="appointment_date" id="appointment_date">
-                                    </div>
-                                    <div class="col-xxl-6 mb-3">
-                                        <label for="email" class="form-label">Appointment Time<span class="text-danger">*</span></label>
-                                        <input type="time" class="form-control" required name="appointment_time" id="appointment_time">
-                                    </div>
-                                </div>
-                                
-                                <hr>
-                                <h6>Extra Details (can be left empty)</h6>
-                                <div class="row">
-                                    <div class="col-xxl-12 mb-3">
-                                        <label for="email" class="form-label">Reason for this Appointment</label>
-                                        <textarea name="reason" id="" cols="30" rows="10" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-xxl-12 mb-3">
-                                        <label for="email" class="form-label">Notes</label>
-                                        <textarea name="notes" id="" cols="30" rows="10" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                
-                                
-                                
-                                <!-- Submit Button -->
-                                <div class="col-lg-12">
-                                    <div class="hstack gap-2 justify-content-end">
-                                        <input type="hidden" name="patient_id" value="{{ $patient->id }}">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-success">Book Appointment</button>
-                                        <button type="submit" class="btn btn-primary">Book & Continue to Vital Recording</button>
-                                    </div>
-                                </div><!-- end col -->
-                            </form>
-                        </div> <!-- end modal body -->
-                    </div> <!-- end modal content -->
-                </div>
-            </div>
-            {{-- end: book appointment --}}
-            
-            
-            
-        </div> <!-- container-fluid -->
+        </div>
         
-    </div>
+        
+        {{-- book appointment --}}
+        <div class="modal fade" data-bs-backdrop="static" id="bookAppointmentPatient" tabindex="-1" aria-labelledby="bookAppointmentPatientLabel">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookAppointmentPatientLabel">Book Appointment for a Patient</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('appointments.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <h5>Patient Details</h5>
+                            <div class="row g-3">
+                                <!-- First Name -->
+                                <div class="col-xxl-12 mb-3">
+                                    <label for="firstName" class="form-label">Patient <span class="text-danger">*</span></label>
+                                    <select name="" id="" class="form-control">
+                                        <option value="" selected disabled>Select a Patient</option>
+                                        @foreach($patients as $patient)
+                                        <option value="{{ $patient->id }}">{{ $patient->first_name . ' ' . $patient->last_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div><!--end col-->
+                            </div>
+                            
+                            <hr>
+                            <h5>Appointment Details</h5>
+                            <div class="row">
+                                <div class="col-xxl-6 mb-3">
+                                    <label for="email" class="form-label">Appointment Type <span class="text-danger">*</span></label>
+                                    <select name="appointment_type" id="appointment_type" class="form-select">
+                                        <option selected value="consultation">Consultation</option>
+                                        <option value="follow-up">Follow Up</option>
+                                        <option value="emergency">Emergency</option>
+                                        <option value="admission">Admission</option>
+                                        <option value="test">Test</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-6 mb-3">
+                                    <label for="email" class="form-label">Doctor</label>
+                                    <select name="doctor_id" id="doctor_id" class="form-select">
+                                        <option selected value="" disabled>Select a Doctor</option>
+                                        @foreach ($doctors as $doctor)
+                                        <option value="{{ $doctor->id }}">{{ $doctor->first_name . ' ' . $doctor->last_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-xxl-6 mb-3">
+                                    <label for="email" class="form-label">Appointment Date<span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" required name="appointment_date" id="appointment_date">
+                                </div>
+                                <div class="col-xxl-6 mb-3">
+                                    <label for="email" class="form-label">Appointment Time<span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" required name="appointment_time" id="appointment_time">
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <h6>Extra Details (can be left empty)</h6>
+                            <div class="row">
+                                <div class="col-xxl-12 mb-3">
+                                    <label for="email" class="form-label">Reason for this Appointment</label>
+                                    <textarea name="reason" id="" cols="30" rows="10" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-xxl-12 mb-3">
+                                    <label for="email" class="form-label">Notes</label>
+                                    <textarea name="notes" id="" cols="30" rows="10" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                            <!-- Submit Button -->
+                            <div class="col-lg-12">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <input type="hidden" name="patient_id" value="{{ $patient->id }}">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Book Appointment</button>
+                                    <button type="submit" class="btn btn-primary">Book & Continue to Vital Recording</button>
+                                </div>
+                            </div><!-- end col -->
+                        </form>
+                    </div> <!-- end modal body -->
+                </div> <!-- end modal content -->
+            </div>
+        </div>
+        {{-- end: book appointment --}}
+        
+        
+        
+    </div> <!-- container-fluid -->
     
-    <script>
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById("appointment_date").setAttribute('min', today);
-    </script>
-    @endsection
-    
+</div>
+
+<script>
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("appointment_date").setAttribute('min', today);
+</script>
+@endsection

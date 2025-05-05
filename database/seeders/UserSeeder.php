@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Nurse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -71,6 +72,21 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
+        ]);
+        // create in nurse table
+        Nurse::create([
+            'user_id' => $user3->id,
+            'staff_id' => 'NURSE-001',
+            'tenant_id' => '111000',
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
+            'phone' => '08098765432',
+            'email' => 'nurse.doe@example.com',
+            'gender' => 'female',
+            'date_of_birth' => now(),
+            'nurse_id' => Str::uuid(),
+            'created_by' => 1,
+
         ]);
         $user3->assignRole('nurse');
     }

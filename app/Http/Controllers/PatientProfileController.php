@@ -49,7 +49,8 @@ class PatientProfileController extends Controller
     {
         $validator = Validator::make($request->all(), [
             // User-specific fields
-            'email' => 'required|string|email|max:255|unique:users,email',
+            'email' => 'nullable|string|email|max:255',
+            // 'email' => 'required|string|email|max:255|unique:users,email',
 
             // Patient profile fields
             'first_name' => 'required|string|max:255',
@@ -85,10 +86,10 @@ class PatientProfileController extends Controller
 
         if ($patient) {
             flash()->success('Patient created successfully.');
-            return redirect()->back()->with('success', 'Patient created successfully.');
+            return redirect()->back();
         } else {
             flash()->error('Failed to create patient.');
-            return redirect()->back()->with('error', 'Failed to create patient.');
+            return redirect()->back();
         }
     }
 
@@ -148,10 +149,10 @@ class PatientProfileController extends Controller
 
         if ($patient) {
             flash()->success('Patient updated successfully.');
-            return redirect()->back()->with('success', 'Patient updated successfully.');
+            return redirect()->back();
         } else {
             flash()->error('Failed to update patient.');
-            return redirect()->back()->with('error', 'Failed to update patient.');
+            return redirect()->back();
         }
     }
 
@@ -165,10 +166,10 @@ class PatientProfileController extends Controller
 
         if ($patient) {
             flash()->success('Patient deleted successfully.');
-            return redirect()->back()->with('success', 'Patient deleted successfully.');
+            return redirect()->back();
         } else {
             flash()->error('Failed to delete patient.');
-            return redirect()->back()->with('error', 'Failed to delete patient.');
+            return redirect()->back();
         }
     }
 }

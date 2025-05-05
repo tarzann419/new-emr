@@ -30,3 +30,10 @@ function username()
 {
     return auth()->user()->username ?? '';
 }
+
+function nurse_id(){
+    if (auth()->user()->hasRole('nurse')) {
+        // return the nurse ID of the authenticated user
+        // return auth()->user()->nurse->id;
+    }
+}
