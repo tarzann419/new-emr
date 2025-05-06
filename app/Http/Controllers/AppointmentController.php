@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Services\AppointmentService;
 use App\Services\DoctorService;
 use App\Services\PatientService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -69,6 +70,27 @@ class AppointmentController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // Check for time conflict within 30 minutes
+        $appointmentDate = $request->input('appointment_date');
+        $appointmentTime = $request->input('appointment_time');
+        $doctorId = $request->input('doctor_id');
+
+        if ($doctorId) {
+            $appointmentDateTime = Carbon::parse("$appointmentDate $appointmentTime");
+
+            $conflict = \App\Models\Appointment::where('doctor_id', $doctorId)
+                ->whereDate('appointment_date', $appointmentDate)
+                ->whereTime('appointment_time', '>=', $appointmentDateTime->copy()->subMinutes(30)->format('H:i:s'))
+                ->whereTime('appointment_time', '<=', $appointmentDateTime->copy()->addMinutes(30)->format('H:i:s'))
+                ->exists();
+
+            if ($conflict) {
+                return redirect()->back()
+                    ->withErrors(['appointment_time' => 'There is already an appointment scheduled for this doctor around the selected time. Please choose another time.'])
+                    ->withInput();
+            }
+        }
+
         // Create the appointment
         $appointment = $this->appointmentService->createAppointment([
             'patient_id' => $request->input('patient_id'),
@@ -82,6 +104,12 @@ class AppointmentController extends Controller
             'booked_by' => username(),
             'tenant_id' => tenant_id(),
         ]);
+
+        // if user clicks on book and continue, redirect to vitals page
+        if ($request->submit_type === 'book_and_continue') {
+            return redirect()->route('vitals.patient', ['appointmentId' => $appointment->id, 'patientId' => $request->patient_id])
+                ->with('success', 'Appointment booked. Proceed to record vitals.');
+        }
 
         if ($appointment) {
             flash()->success('Appointment created successfully.');
@@ -211,5 +239,24 @@ class AppointmentController extends Controller
             flash()->error('Failed to reschedule appointment. Please try again.');
             return redirect()->back();
         }
+    }
+
+
+    public function getDoctorSchedule($doctorId)
+    {
+        $appointments = Appointment::where('doctor_id', $doctorId)
+            ->get(['appointment_date', 'appointment_time', 'reason']);
+
+        // Convert to FullCalendar event format
+        $events = $appointments->map(function ($appt) {
+            return [
+                'title' => $appt->reason ?? 'Booked',
+                'start' => $appt->appointment_date . 'T' . $appt->appointment_time,
+                'end' => \Carbon\Carbon::parse($appt->appointment_date . ' ' . $appt->appointment_time)->addMinutes(30), // default duration
+                'color' => '#dc3545', // red
+            ];
+        });
+
+        return response()->json($events);
     }
 }

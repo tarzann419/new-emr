@@ -224,52 +224,81 @@
                     <div class="modal-body">
                         <form action="{{ route('appointments.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            
                             <h5>Patient Details</h5>
                             <div class="row g-3">
-                                <!-- First Name -->
+                                <!-- Patient Select -->
                                 <div class="col-xxl-12 mb-3">
-                                    <label for="firstName" class="form-label">Patient <span class="text-danger">*</span></label>
-                                    <select name="" id="" class="form-control">
+                                    <label for="patient_id" class="form-label">Patient <span class="text-danger">*</span></label>
+                                    <select name="patient_id" id="patient_id" class="form-control @error('patient_id') is-invalid @enderror">
                                         <option value="" selected disabled>Select a Patient</option>
                                         @foreach($patients as $patient)
-                                        <option value="{{ $patient->id }}">{{ $patient->first_name . ' ' . $patient->last_name }}</option>
+                                        <option value="{{ $patient->id }}" {{ old('patient_id') == $patient->id ? 'selected' : '' }}>
+                                            {{ $patient->first_name . ' ' . $patient->last_name }}
+                                        </option>
                                         @endforeach
                                     </select>
-                                </div><!--end col-->
+                                    @error('patient_id')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
                             
                             <hr>
                             <h5>Appointment Details</h5>
                             <div class="row">
                                 <div class="col-xxl-6 mb-3">
-                                    <label for="email" class="form-label">Appointment Type <span class="text-danger">*</span></label>
-                                    <select name="appointment_type" id="appointment_type" class="form-select">
-                                        <option selected value="consultation">Consultation</option>
-                                        <option value="follow-up">Follow Up</option>
-                                        <option value="emergency">Emergency</option>
-                                        <option value="admission">Admission</option>
-                                        <option value="test">Test</option>
+                                    <label class="form-label">Appointment Type <span class="text-danger">*</span></label>
+                                    <select name="appointment_type" id="appointment_type" class="form-select @error('appointment_type') is-invalid @enderror">
+                                        <option value="consultation" {{ old('appointment_type') == 'consultation' ? 'selected' : '' }}>Consultation</option>
+                                        <option value="follow-up" {{ old('appointment_type') == 'follow-up' ? 'selected' : '' }}>Follow Up</option>
+                                        <option value="emergency" {{ old('appointment_type') == 'emergency' ? 'selected' : '' }}>Emergency</option>
+                                        <option value="admission" {{ old('appointment_type') == 'admission' ? 'selected' : '' }}>Admission</option>
+                                        <option value="test" {{ old('appointment_type') == 'test' ? 'selected' : '' }}>Test</option>
                                     </select>
+                                    @error('appointment_type')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
                                 </div>
+                                
                                 <div class="col-xxl-6 mb-3">
-                                    <label for="email" class="form-label">Doctor</label>
-                                    <select name="doctor_id" id="doctor_id" class="form-select">
-                                        <option selected value="" disabled>Select a Doctor</option>
+                                    <label class="form-label">Doctor</label>
+                                    <select name="doctor_id" id="doctor_id" class="form-select @error('doctor_id') is-invalid @enderror">
+                                        <option selected disabled value="">Select a Doctor</option>
                                         @foreach ($doctors as $doctor)
-                                        <option value="{{ $doctor->id }}">{{ $doctor->first_name . ' ' . $doctor->last_name }}</option>
+                                        <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
+                                            {{ $doctor->first_name . ' ' . $doctor->last_name }}
+                                        </option>
                                         @endforeach
                                     </select>
+                                    @error('doctor_id')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-xxl-6 mb-3">
-                                    <label for="email" class="form-label">Appointment Date<span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" required name="appointment_date" id="appointment_date">
+                                    <label class="form-label">Appointment Date <span class="text-danger">*</span></label>
+                                    <input type="date" name="appointment_date" value="{{ old('appointment_date') }}" class="form-control @error('appointment_date') is-invalid @enderror" required>
+                                    @error('appointment_date')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
                                 </div>
+                                
                                 <div class="col-xxl-6 mb-3">
-                                    <label for="email" class="form-label">Appointment Time<span class="text-danger">*</span></label>
-                                    <input type="time" class="form-control" required name="appointment_time" id="appointment_time">
+                                    <label class="form-label">Appointment Time <span class="text-danger">*</span></label>
+                                    <input type="time" name="appointment_time" value="{{ old('appointment_time') }}" class="form-control @error('appointment_time') is-invalid @enderror" required>
+                                    @error('appointment_time')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-xxl-12">
+                                    <label class="form-label">Doctor's Schedule</label>
+                                    <div id="doctor-calendar"></div>
                                 </div>
                             </div>
                             
@@ -277,29 +306,32 @@
                             <h6>Extra Details (can be left empty)</h6>
                             <div class="row">
                                 <div class="col-xxl-12 mb-3">
-                                    <label for="email" class="form-label">Reason for this Appointment</label>
-                                    <textarea name="reason" id="" cols="30" rows="10" class="form-control"></textarea>
+                                    <label class="form-label">Reason for this Appointment</label>
+                                    <textarea name="reason" class="form-control @error('reason') is-invalid @enderror" rows="4">{{ old('reason') }}</textarea>
+                                    @error('reason')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-xxl-12 mb-3">
-                                    <label for="email" class="form-label">Notes</label>
-                                    <textarea name="notes" id="" cols="30" rows="10" class="form-control"></textarea>
+                                    <label class="form-label">Notes</label>
+                                    <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="4">{{ old('notes') }}</textarea>
+                                    @error('notes')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
-                            
-                            
                             
                             <!-- Submit Button -->
                             <div class="col-lg-12">
                                 <div class="hstack gap-2 justify-content-end">
-                                    <input type="hidden" name="patient_id" value="{{ $patient->id }}">
                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-success">Book Appointment</button>
-                                    <button type="submit" class="btn btn-primary">Book & Continue to Vital Recording</button>
+                                    <button type="submit" name="submit_type" value="book" class="btn btn-success">Book Appointment</button>
+                                    <button type="submit" name="submit_type" value="book_and_continue" class="btn btn-primary">Book & Continue to Vital Recording</button>
                                 </div>
-                            </div><!-- end col -->
+                            </div>
                         </form>
                     </div> <!-- end modal body -->
                 </div> <!-- end modal content -->
@@ -316,5 +348,34 @@
 <script>
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("appointment_date").setAttribute('min', today);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let calendarEl = document.getElementById('doctor-calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            height: 500,
+            events: [],
+        });
+        calendar.render();
+        
+        document.getElementById('doctor_id').addEventListener('change', function () {
+            let doctorId = this.value;
+            
+            if (!doctorId) return;
+            
+            fetch(`/fetch/doctor-schedule/${doctorId}`)
+            .then(response => response.json())
+            .then(data => {
+                calendar.removeAllEvents();
+                calendar.addEventSource(data); // expects array of events
+            })
+            .catch(error => {
+                console.error("Failed to load doctor's schedule", error);
+            });
+        });
+    });
 </script>
 @endsection

@@ -87,7 +87,7 @@
                                         <th scope="row">
                                             {{-- button group --}}
                                             <div class="btn-group" role="group" aria-label="Basic example">
-                                                <button type="button" data-bs-toggle="modal"  class="btn btn-sm btn-primary">Reshedule Appointment</button>
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editVital{{ $vital->id }}" class="btn btn-sm btn-primary">Edit</button>
                                                 <form action="{{ route('destroy.vitals.patient', $vital->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE') 
@@ -97,6 +97,114 @@
                                             </div>
                                         </th>
                                     </tr>
+                                    
+                                    
+                                    
+                                    
+                                    {{-- edit vitals --}}
+                                    <div class="modal fade" data-bs-backdrop="static" id="editVital{{ $vital->id }}" tabindex="-1" aria-labelledby="editVitalLabel">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editVitalLabel">Record Patient Vitals</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('update.vitals.patient', $vital->id) }}" method="POST" id="vitalForm">
+                                                        @csrf
+                                                        <div class="row g-3 mb-3">
+                                                            <!-- Height -->
+                                                            <div class="col-md-4">
+                                                                <label for="height" class="form-label">Height</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('height', $vital->height) }}" class="form-control" id="height" name="height" min="0" step="0.1" required>
+                                                                    <span class="input-group-text">cm</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Weight -->
+                                                            <div class="col-md-4">
+                                                                <label for="weight" class="form-label">Weight</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('weight', $vital->weight) }}" class="form-control" id="weight" name="weight" min="0" step="0.1" required>
+                                                                    <span class="input-group-text">kg</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="row g-3 mb-3">
+                                                            <!-- Blood Pressure -->
+                                                            <div class="col-md-4">
+                                                                <label for="bloodPressure" class="form-label">Blood Pressure <span class="text-warning">(mandatory)</span></label>
+                                                                <div class="input-group">
+                                                                    <input type="text" value="{{ old('blood_pressure', $vital->blood_pressure) }}" class="form-control" id="bloodPressure" name="blood_pressure" placeholder="e.g., 120/80" required>
+                                                                    <span class="input-group-text">mmHg</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Temperature -->
+                                                            <div class="col-md-4">
+                                                                <label for="temperature" class="form-label">Temperature <span class="text-warning">(mandatory)</span></label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('temperature', $vital->temperature) }}" class="form-control" id="temperature" name="temperature" min="30" max="45" step="0.1" required>
+                                                                    <span class="input-group-text">°C</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Pulse / Heart Rate -->
+                                                            <div class="col-md-4">
+                                                                <label for="pulse" class="form-label">Pulse / Heart Rate <span class="text-warning">(mandatory)</span></label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('heart_rate', $vital->heart_rate) }}" class="form-control" id="heart_rate" name="heart_rate" min="30" max="200" required>
+                                                                    <span class="input-group-text">bpm</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Respiratory Rate -->
+                                                            <div class="col-md-4">
+                                                                <label for="respiratoryRate" class="form-label">Respiratory Rate</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('respiratory_rate', $vital->respiratory_rate) }}" class="form-control" id="respiratoryRate" name="respiratory_rate" min="5" max="60" >
+                                                                    <span class="input-group-text">breaths/min</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Oxygen Saturation -->
+                                                            <div class="col-md-4">
+                                                                <label for="oxygenSaturation" class="form-label">Oxygen Saturation</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('oxygen_saturation', $vital->oxygen_saturation) }}" class="form-control" id="oxygenSaturation" name="oxygen_saturation" min="50" max="100">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- BMI -->
+                                                            <div class="col-md-4">
+                                                                <label for="bmi" class="form-label">BMI</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" value="{{ old('bmi', $vital->bmi) }}" class="form-control" id="bmi" name="bmi" min="10" max="60" step="0.1">
+                                                                    <span class="input-group-text">kg/m²</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                        <!-- Actions -->
+                                                        <div class="col-lg-12">
+                                                            <input type="hidden" name="patient_id" value="{{ $patient->id ?? '' }}">
+                                                            <input type="hidden" name="appointment_id" value="{{ $appointment->id ?? '' }}">
+                                                            <input type="hidden" name="nurse_id" value="{{ nurse_id() }}">
+                                                            <div class="hstack gap-2 justify-content-end">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Update Vitals</button>
+                                                            </div>
+                                                        </div><!-- end col -->
+                                                    </form>
+                                                </div> <!-- end modal body -->
+                                            </div> <!-- end modal content -->
+                                        </div>
+                                    </div>
+                                    {{-- end: edit vitals --}}
                                     
                                     @endforeach
                                 </tbody>
@@ -109,12 +217,12 @@
         </div>
         
         
-        {{-- reschedule appointment --}}
+        {{-- record patient vitals --}}
         <div class="modal fade" data-bs-backdrop="static" id="recordVital" tabindex="-1" aria-labelledby="recordVitalLabel">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="recordVitalLabel">Reschedule Patient's Appointment</h5>
+                        <h5 class="modal-title" id="recordVitalLabel">Record Patient Vitals</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -172,7 +280,7 @@
                                 <div class="col-md-4">
                                     <label for="respiratoryRate" class="form-label">Respiratory Rate</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="respiratoryRate" name="respiratory_rate" min="5" max="60" required>
+                                        <input type="number" class="form-control" id="respiratoryRate" name="respiratory_rate" min="5" max="60" >
                                         <span class="input-group-text">breaths/min</span>
                                     </div>
                                 </div>
@@ -181,7 +289,7 @@
                                 <div class="col-md-4">
                                     <label for="oxygenSaturation" class="form-label">Oxygen Saturation</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="oxygenSaturation" name="oxygen_saturation" min="50" max="100" required>
+                                        <input type="number" class="form-control" id="oxygenSaturation" name="oxygen_saturation" min="50" max="100">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
@@ -190,7 +298,7 @@
                                 <div class="col-md-4">
                                     <label for="bmi" class="form-label">BMI</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="bmi" name="bmi" min="10" max="60" step="0.1" readonly>
+                                        <input type="number" class="form-control" id="bmi" name="bmi" min="10" max="60" step="0.1">
                                         <span class="input-group-text">kg/m²</span>
                                     </div>
                                 </div>
@@ -212,7 +320,7 @@
                 </div> <!-- end modal content -->
             </div>
         </div>
-        {{-- end: reschedule appointment --}}
+        {{-- end: record patient vitals --}}
         
         
     </div>

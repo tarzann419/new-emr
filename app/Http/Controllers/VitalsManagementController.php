@@ -136,10 +136,13 @@ class VitalsManagementController extends Controller
     {
         $vital = $this->vitalService->updateVital($id, $request->validated());
 
-        return response()->json([
-            'message' => 'Vitals updated successfully.',
-            'data' => $vital,
-        ]);
+        if ($vital) {
+            flash()->success('Vital updated successfully.');
+            return redirect()->back();
+        } else {
+            flash()->error('Failed to update vital. Please try again.');
+            return redirect()->back();
+        }
     }
 
     public function destroy($id)

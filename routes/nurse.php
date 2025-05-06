@@ -15,5 +15,6 @@ Route::prefix('nurse')->middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/vitals/{appointmentId}/{patientId}', [VitalsManagementController::class, 'patientVitals'])->name('vitals.patient');
     Route::post('/vitals', [VitalsManagementController::class, 'store'])->name('store.vitals.patient');
+    Route::post('/vitals/{vitalId}', [VitalsManagementController::class, 'update'])->name('update.vitals.patient');
     Route::delete('/vitals/{vitalId}', [VitalsManagementController::class, 'destroy'])->name('destroy.vitals.patient');
 });

@@ -27,8 +27,12 @@
     {{-- select2 --}}
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-        <style>
+    
+    {{-- calendar --}}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    
+    
+    <style>
         .select2-container .select2-selection--single {
             height: 38px !important; /* Match Bootstrap's default input height */
             border: 1px solid #ced4da !important; /* Match form-control border */
@@ -110,6 +114,9 @@
     
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    {{-- calendar --}}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     
     <!-- Your custom script -->
     <script>

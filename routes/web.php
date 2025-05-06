@@ -22,6 +22,18 @@ Route::resource('appointments', AppointmentController::class)
     ->middleware(['auth', 'verified'])
     ->except(['show', 'edit', 'update']);
 
+
+// Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
+//     Route::controller(AdminDashboardController::class)->group(function () {
+//         Route::get('/dashboard', 'index')->name('admin.dashboard');
+//     });
+// });
+
+
+Route::prefix('fetch')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('doctor-schedule/{doctorId}', [AppointmentController::class, 'getDoctorSchedule'])->name('fetch.doctor.schedule');
+});
+
 require __DIR__.'/auth.php';
 
 
